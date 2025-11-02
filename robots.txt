@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://gosiamigut.github.io//sitemap.xml
+Sitemap: https://gosiamigut.github.io/sitemap.xml
