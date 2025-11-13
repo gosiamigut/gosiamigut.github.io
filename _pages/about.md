@@ -34,5 +34,5 @@ I have obtained my phd in the area of Explainable Machine Learning from the Univ
 
 I teach courses on Machine Learning and AI in Education and actively work on strengthening the [Machine Learning & AI Teachers Community](https://www.tudelft.nl/ai/onderwijs/ai-onderwijsinnovatie/machine-learning-teachers-community) within and outside TU Delft. 
 
-I also love making jewellery. Some examples of my jewels can be found on my [personal website](https://gosiamigut.github.io).
+I also love making [jewelry](https://gosiamigut.github.io/jewelry/).
 
