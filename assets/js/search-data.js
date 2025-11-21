@@ -23,15 +23,16 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/jewelry/";
           },
-        },{id: "news-a-simple-inline-announcement",
-          title: 'A simple inline announcement.',
+        },{id: "news-workshop-community-day-4tu-cee-2024-llm-s-in-engineering-education",
+          title: 'Workshop. Community Day 4TU.CEE 2024: LLM’s in engineering education.',
           description: "",
-          section: "News",},{id: "news-a-long-announcement-with-details",
-          title: 'A long announcement with details',
+          section: "News",},{id: "news-workshop-spring-symposium-ai-education-2024-machine-learning-education-in-the-different-faculties-best-practices-tips-and-sharing-materials",
+          title: 'Workshop. Spring Symposium – AI Education 2024: Machine Learning Education in the different...',
           description: "",
-          section: "News",handler: () => {
-              window.location.href = "/news/announcement_2.html";
-            },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
-          title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
+          section: "News",},{id: "news-invited-talk-industrial-design-amp-amp-engineering-education-day-2025-genai-and-education",
+          title: 'Invited talk. Industrial Design &amp;amp;amp; Engineering Education Day 2025: GenAI and Education.',
+          description: "",
+          section: "News",},{id: "news-dynamic-dialog-tu-delft-education-day-2025-beyond-the-inevitable-an-open-discussion-on-generative-ai-and-education",
+          title: 'Dynamic Dialog. TU Delft Education Day 2025: Beyond the inevitable: an open discussion...',
           description: "",
           section: "News",},];
