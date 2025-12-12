@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-**Workshop.** PhD Committee Azqa Nadeem. 
+**PhD Committee.** Azqa Nadeem, 2024. 
