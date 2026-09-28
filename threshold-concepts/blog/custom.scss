@@ -1,0 +1,529 @@
+/*-- scss:defaults --*/
+
+// minimalist light theme; palette matches the presentation deck
+$body-bg: #fcfcfb;
+$body-color: #1a1a19;
+$link-color: #2a78d6;
+$headings-color: #0b0b0b;
+$headings-font-weight: 700;
+$font-family-sans-serif: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$toc-color: #52514e;
+$toc-active-border: #2a78d6;
+
+// the five threshold-concept accent colors (same as the talk)
+$tc1: #2a78d6; // optimization — blue
+$tc2: #e34948; // tradeoffs/error — red
+$tc3: #eda100; // empirical — yellow
+$tc4: #4a3aa7; // geometric — violet
+$tc5: #1baf7a; // probabilistic — aqua
+
+/*-- scss:rules --*/
+
+body { line-height: 1.6; }
+
+// ---- undo Quarto's margin-citation grid stamping on custom layout divs ---
+// `citation-location`/`reference-location: margin` makes Quarto's Lua
+// filter stamp `.page-columns.page-full` (grid-column: screen-start /
+// screen-end, i.e. full viewport width) onto every pandoc Div in the
+// body — including ones nested arbitrarily deep inside our own
+// card/flex/grid layouts. Since that class has the same selector
+// specificity as our own rules below, whichever rule is later in the
+// compiled stylesheet wins the *entire* declaration (not just the
+// property we care about), so containers relying on their own
+// `grid-template-columns` (e.g. `.ex-cards`) can silently lose it and
+// collapse into full-width, single-column stacks, and flex containers
+// (e.g. `.quote-figure`) keep their internal layout but the box itself
+// balloons out to the left past the body-text column. Raw ```{=html}```
+// blocks are invisible to this filter (it walks the pandoc AST, not raw
+// HTML), which is why e.g. `.icon-placeholder` divs were never affected.
+// :not(.column-margin) exclusion is load-bearing: a card/quote that
+// cites something gets a *real* margin-note div nested inside it too
+// (quarto's own, meant to escape into the margin track) — resetting
+// that one to `auto` as well would trap the citation's full reference
+// entry inside the card instead of letting it float into the margin.
+.quote-figure, .ex-cards, .char-cards, .authors-row, .stickies, .group-board, .shift-diagram, .discussion-prompt, .paper-figs,
+.quote-figure *:not(.column-margin), .ex-cards *:not(.column-margin), .char-cards *:not(.column-margin), .authors-row *:not(.column-margin), .stickies *:not(.column-margin), .group-board *:not(.column-margin), .shift-diagram *:not(.column-margin), .discussion-prompt *:not(.column-margin), .paper-figs *:not(.column-margin) {
+  grid-column: auto !important;
+}
+// re-confine just the outer containers (not their descendants) to the
+// normal body-text column, after the blanket reset above
+.quote-figure, .ex-cards, .char-cards, .authors-row, .stickies, .group-board, .shift-diagram, .discussion-prompt, .paper-figs {
+  grid-column: body-content-start / body-content-end !important;
+}
+// any .card containing a citation (e.g. the Economics/CS/Writing
+// examples) gets the same display:grid stamping as .bigquote above
+.card { display: block !important; }
+
+.muted { color: #898781; }
+.small { font-size: 0.85em; }
+
+// thin top stripe in the five threshold-concept accent colors,
+// left-to-right in theoretical->practical order (tc4, tc5, tc1, tc2,
+// tc3) — a quiet callback to the paper's jigsaw figure
+#title-block-header {
+  position: relative;
+  padding-top: 1.2em;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(
+      to right,
+      #{$tc4} 0% 20%,
+      #{$tc5} 20% 40%,
+      #{$tc1} 40% 60%,
+      #{$tc2} 60% 80%,
+      #{$tc3} 80% 100%
+    );
+  }
+}
+
+.bigquote {
+  // display:block !important: this div contains a citation, so quarto's
+  // margin-citation filter stamps it .page-columns.page-full too — same
+  // grid-stamping issue as the container rules above, but this time it
+  // forces display:grid on an element with no grid-template of its own,
+  // so its content auto-lays-out across the elaborate named-line
+  // template instead of flowing as normal block text
+  display: block !important;
+  font-size: 1.3em;
+  font-style: italic;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  color: #0b0b0b;
+}
+
+.center-text { text-align: center; }
+
+// ---- combined author row ------------------------------------------------
+.authors-row {
+  // !important throughout this file's top-level container rules: see
+  // the grid-stamping note near the top of scss:rules — quarto's
+  // .page-columns rule has equal specificity and otherwise wins outright
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 1.4em;
+  margin: 1.2em 0 1.6em 0;
+  .author {
+    font-size: 0.92em;
+    line-height: 1.4;
+    text-align: center;
+    p { margin: 0.35em 0; }
+    img {
+      width: 110px;
+      height: 110px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin: 0 auto 0.6em auto;
+      display: block;
+    }
+    strong { font-size: 1.1em; }
+    ul {
+      text-align: left;
+      margin: 0.5em 0 0 1.1em;
+      padding: 0;
+      font-size: 0.92em;
+      li { margin-bottom: 0.2em; }
+    }
+  }
+}
+
+.positionality {
+  margin: 0.6em 0 1.6em 0;
+  text-align: center;
+  font-size: 0.95em;
+  color: #52514e;
+  border-top: 1px solid #e1e0d9;
+  border-bottom: 1px solid #e1e0d9;
+  padding: 0.7em 0;
+}
+
+// ---- door-quote figure ----------------------------------------------------
+.quote-figure {
+  // !important: quarto's margin-citation layout stamps every top-level
+  // div with .page-columns (a grid display), which otherwise wins over
+  // this rule at equal specificity and collapses the row into a stack
+  display: flex !important;
+  align-items: center;
+  gap: 2.2em;
+  margin: 1em 0 1.4em 0;
+  > p:first-child {
+    margin: 0;
+    flex-shrink: 0;
+  }
+  img {
+    width: 130px;
+    height: 170px;
+    object-fit: cover;
+    border-radius: 6px;
+    display: block;
+  }
+  .bigquote {
+    margin: 0;
+    padding-top: 0.6em;
+    padding-left: 0.4em;
+  }
+}
+@media (max-width: 700px) {
+  .quote-figure { flex-direction: column !important; }
+}
+
+// ---- five characteristics cards -----------------------------------------
+.char-cards {
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr) !important;
+  gap: 0.7em;
+  margin: 1em 0 1.4em 0;
+  .card {
+    border: 1px solid #e1e0d9;
+    border-top: 5px solid #2a78d6;
+    border-radius: 6px;
+    padding: 0.7em 0.75em;
+    font-size: 0.85em;
+    line-height: 1.4;
+    background: #ffffff;
+    strong { display: block; font-size: 1.1em; margin-bottom: 0.3em; }
+  }
+  .card:nth-child(2) { border-top-color: #e34948; }
+  .card:nth-child(3) { border-top-color: #eda100; }
+  .card:nth-child(4) { border-top-color: #1baf7a; }
+  .card:nth-child(5) { border-top-color: #4a3aa7; }
+}
+@media (max-width: 700px) {
+  .char-cards { grid-template-columns: repeat(2, 1fr) !important; }
+}
+
+// ---- generic example cards -------------------------------------------------
+.ex-cards {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 0.8em;
+  margin: 1em 0 1.4em 0;
+  .card {
+    border: 1px solid #e1e0d9;
+    border-radius: 8px;
+    background: #ffffff;
+    padding: 0.8em 0.9em;
+    font-size: 0.92em;
+    line-height: 1.45;
+    strong { display: block; margin-bottom: 0.35em; font-size: 1.05em; }
+  }
+}
+.ex-cards.two { grid-template-columns: repeat(2, 1fr) !important; }
+.ex-cards.four { grid-template-columns: repeat(4, 1fr) !important; .card { font-size: 0.82em; } }
+@media (max-width: 700px) {
+  .ex-cards, .ex-cards.two, .ex-cards.four { grid-template-columns: 1fr !important; }
+}
+
+.img-placeholder, .icon-placeholder {
+  border-radius: 50%;
+  height: 84px;
+  width: 84px;
+  margin: 0 auto 0.5em auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4em;
+  line-height: 1;
+  background: rgba(42, 120, 214, 0.12);
+  // flex align-items:center centers the emoji's *line box*, but emoji
+  // fonts reserve extra descender space below the glyph that isn't
+  // part of its visible ink — that shifts every emoji up by the same
+  // amount regardless of which one it is (measured ~6-7px off-centre
+  // in an 84px circle at this font-size). A uniform downward nudge
+  // fixes all of them at once rather than tuning each glyph by hand.
+  p { margin: 0; transform: translateY(0.08em); }
+}
+.ex-cards .card:nth-child(1) .img-placeholder,
+.ex-cards .card:nth-child(1) .icon-placeholder { background: rgba(42, 120, 214, 0.12); }
+.ex-cards .card:nth-child(2) .img-placeholder,
+.ex-cards .card:nth-child(2) .icon-placeholder { background: rgba(227, 73, 72, 0.12); }
+.ex-cards .card:nth-child(3) .img-placeholder,
+.ex-cards .card:nth-child(3) .icon-placeholder { background: rgba(237, 161, 0, 0.12); }
+.ex-cards .card:nth-child(4) .img-placeholder,
+.ex-cards .card:nth-child(4) .icon-placeholder { background: rgba(27, 175, 122, 0.12); }
+
+// ---- figure grids for paper screenshots (GAN / fairness objectives) -------
+.paper-figs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6em;
+  margin: 1em 0 1.4em 0;
+  img {
+    max-width: 100%;
+    width: 480px;
+    border: 1px solid #e1e0d9;
+    border-radius: 4px;
+  }
+}
+
+.roomba-img {
+  display: block;
+  max-width: 100%;
+  width: 425px;
+  margin: 1em auto;
+  border: 1px solid #e1e0d9;
+  border-radius: 8px;
+}
+
+// ---- TC section framing ----------------------------------------------------
+.tc-section h2 {
+  border-bottom: 4px solid #2a78d6;
+  display: inline-block;
+  padding-bottom: 0.1em;
+}
+.tc1-section h2 { border-bottom-color: #{$tc1}; }
+.tc2-section h2 { border-bottom-color: #{$tc2}; }
+.tc3-section h2 { border-bottom-color: #{$tc3}; }
+.tc4-section h2 { border-bottom-color: #{$tc4}; }
+.tc5-section h2 { border-bottom-color: #{$tc5}; }
+
+.tc-tag {
+  display: inline-block;
+  font-size: 0.65em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.15em 0.6em;
+  border-radius: 3px;
+  color: #fff;
+  margin-right: 0.5em;
+  vertical-align: middle;
+}
+.tc1-tag { background: #{$tc1}; }
+.tc2-tag { background: #{$tc2}; }
+.tc3-tag { background: #{$tc3}; }
+.tc4-tag { background: #{$tc4}; }
+.tc5-tag { background: #{$tc5}; }
+
+// ---- sticky-note process figures (static, non-animated) -------------------
+.stickies, .group-board { margin: 1em 0 0.6em 0; }
+.stickies {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6em;
+}
+.note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.55em 0.6em;
+  font-size: 0.85em;
+  line-height: 1.3;
+  background: #fff9dd;
+  border: 1px solid #e1e0d9;
+  border-radius: 4px;
+  box-shadow: 2px 2px 4px rgba(11, 11, 11, 0.08);
+  min-height: 3em;
+}
+.note.tc1 { background: #e4eefb; border-left: 5px solid #{$tc1}; }
+.note.tc2 { background: #fbe7e7; border-left: 5px solid #{$tc2}; }
+.note.tc3 { background: #fcf2d8; border-left: 5px solid #{$tc3}; }
+.note.tc4 { background: #e9e6f7; border-left: 5px solid #{$tc4}; }
+.note.tc5 { background: #e0f5ec; border-left: 5px solid #{$tc5}; }
+
+.group-board {
+  display: flex;
+  gap: 0.6em;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+.group-board .gcol {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.6em;
+  flex: 1;
+  min-width: 220px;
+}
+.group-board .zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.6em;
+  border: 2px dashed #e1e0d9;
+  border-radius: 8px;
+}
+.group-board .zlabel { font-size: 0.78em; font-weight: 700; line-height: 1.25; text-align: center; }
+.group-board .note { width: 100%; }
+.group-board .z-tl { border-color: #{$tc4}; .zlabel { color: #{$tc4}; } }
+.group-board .z-tr { border-color: #{$tc2}; .zlabel { color: #{$tc2}; } }
+.group-board .z-c  { border-color: #{$tc1}; .zlabel { color: #{$tc1}; } }
+.group-board .z-bl { border-color: #{$tc5}; .zlabel { color: #{$tc5}; } }
+.group-board .z-br { border-color: #{$tc3}; .zlabel { color: #b97e00; } }
+@media (max-width: 700px) {
+  .stickies { grid-template-columns: repeat(2, 1fr); }
+}
+
+// ---- inline-SVG jigsaw (five proposed threshold concepts) ------------------
+.jigsaw {
+  width: 100%;
+  max-width: 640px;
+  margin: 0.6em auto 1em auto;
+  svg { width: 100%; height: auto; display: block; }
+  text { font-family: inherit; }
+}
+.jigsaw-small {
+  max-width: 420px;
+}
+
+// ---- mindset-shift diagrams (ML is an Empirical Science) ------------------
+.shift-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6em;
+  flex-wrap: wrap;
+  margin: 1.2em 0;
+
+  .old {
+    text-align: center;
+    max-width: 220px;
+    strong { display: block; font-size: 1.05em; color: #0b0b0b; margin-bottom: 0.2em; }
+  }
+  .old-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 0.5em;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2em;
+    background: rgba(137, 135, 129, 0.14);
+  }
+  .shift-arrow-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1.6em;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .shift-arrow {
+    font-size: 2em;
+    color: #eda100;
+    line-height: 1;
+  }
+  .pdm-triangle {
+    width: 340px;
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+// ---- syllabus table ---------------------------------------------------------
+.syllabus-table {
+  border-collapse: collapse;
+  font-size: 0.85em;
+  line-height: 1.3;
+  color: #0b0b0b;
+  margin: 1em auto;
+  width: 100%;
+  max-width: 520px;
+  th, td {
+    border: 1px solid #c3c2b7;
+    padding: 0.3em 0.7em;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: rgba(137, 135, 129, 0.14);
+    font-weight: 700;
+  }
+  th:first-child, td:first-child {
+    width: 2.4em;
+    text-align: center;
+  }
+}
+
+// ---- interactive k-means widget (D3) --------------------------------------
+.kmeans-widget {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.4em;
+  margin: 1.2em 0;
+  .kmeans-svg {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    flex-shrink: 0;
+  }
+  .kmeans-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7em;
+    font-size: 0.95em;
+    flex: 1;
+    min-width: 200px;
+  }
+  .kmeans-info {
+    line-height: 1.4;
+    color: #0b0b0b;
+    min-height: 2.6em;
+  }
+  .kmeans-btn, .kmeans-reset {
+    font-family: inherit;
+    font-size: 1em;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 0.55em 1em;
+  }
+  .kmeans-btn {
+    background: #2a78d6;
+    color: #ffffff;
+    border: none;
+    font-weight: 700;
+  }
+  .kmeans-btn:disabled {
+    background: #c3c2b7;
+    cursor: default;
+  }
+  .kmeans-btn:not(:disabled):hover { background: #1c5cab; }
+  .kmeans-reset {
+    background: none;
+    border: 1px solid #c3c2b7;
+    color: #52514e;
+  }
+  .kmeans-reset:hover { border-color: #898781; color: #0b0b0b; }
+}
+
+#workflow-diagram {
+  margin: 1.2em 0;
+  svg { max-width: 100%; height: auto; }
+}
+
+// ---- inline "on this page" nav --------------------------------------------
+// A plain in-flow box rather than quarto's toc:true sidebar: with margin
+// citations enabled throughout the post, a floating margin-sidebar TOC
+// collapses into an awkward collapsed dropdown (see custom.scss history) —
+// an ordinary link list placed in the body avoids that entirely.
+.on-this-page {
+  border: 1px solid #e1e0d9;
+  border-radius: 8px;
+  padding: 0.9em 1.4em;
+  margin: 1.2em 0 1.6em 0;
+  background: #ffffff;
+  font-size: 0.92em;
+  strong { display: block; margin-bottom: 0.4em; font-size: 1.05em; }
+  ul { margin: 0; padding-left: 1.2em; }
+  li { margin-bottom: 0.25em; }
+  a { text-decoration: none; }
+  a:hover { text-decoration: underline; }
+}
+
+// ---- discussion prompt callout --------------------------------------------
+.discussion-prompt {
+  text-align: center;
+  border: 2px solid #2a78d6;
+  border-radius: 10px;
+  padding: 1.4em 1.2em;
+  margin: 1.6em 0;
+  background: rgba(42, 120, 214, 0.05);
+  font-size: 1.15em;
+}
