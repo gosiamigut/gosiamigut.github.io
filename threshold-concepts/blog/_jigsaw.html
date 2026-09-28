@@ -1,0 +1,50 @@
+<svg viewBox="0 0 900 580" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five threshold concepts as interlocking jigsaw pieces, arranged from theoretical on the left to practical on the right">
+  <!-- theoretical <-> practical axis (arrowheads drawn inline, not via
+       a <marker id>: this partial is included many times per page, and
+       duplicate ids would all resolve to whichever copy is first in the
+       document — breaking url(#...) refs on every later inclusion) -->
+  <line class="axis" x1="70" y1="48" x2="830" y2="48" stroke="#52514e" stroke-width="1.6"/>
+  <path class="axis" d="M78,40 L70,48 L78,56" fill="none" stroke="#52514e" stroke-width="1.6"/>
+  <path class="axis" d="M822,40 L830,48 L822,56" fill="none" stroke="#52514e" stroke-width="1.6"/>
+  <text class="axis" x="70" y="26" font-size="24" fill="#52514e">Theoretical</text>
+  <text class="axis" x="830" y="26" font-size="24" fill="#52514e" text-anchor="end">Practical</text>
+
+  <!-- (1) centre: Learning is Optimization -->
+  <path class="piece p1" d="M320,100 H580 V294 A26,26 0 0 1 580,346 V540 H320 V346 A26,26 0 0 1 320,294 Z"
+        fill="#e4eefb" stroke="#2a78d6" stroke-width="3"/>
+  <!-- (2) top right: There are Tradeoffs in Sources of Error -->
+  <path class="piece p2" d="M580,100 H860 V320 H746 A26,26 0 0 0 694,320 H606 A26,26 0 0 0 580,294 Z"
+        fill="#fbe7e7" stroke="#e34948" stroke-width="3"/>
+  <!-- (3) bottom right: ML is an Empirical Science -->
+  <path class="piece p3" d="M580,346 A26,26 0 0 0 606,320 H694 A26,26 0 0 1 746,320 H860 V540 H580 Z"
+        fill="#fcf2d8" stroke="#eda100" stroke-width="3"/>
+  <!-- (4) top left: ML Describes Geometric Processes -->
+  <path class="piece p4" d="M40,100 H320 V294 A26,26 0 0 0 294,320 H206 A26,26 0 0 1 154,320 H40 Z"
+        fill="#e9e6f7" stroke="#4a3aa7" stroke-width="3"/>
+  <!-- (5) bottom left: ML Demands a Probabilistic Lens -->
+  <path class="piece p5" d="M40,320 H154 A26,26 0 0 0 206,320 H294 A26,26 0 0 0 320,346 V540 H40 Z"
+        fill="#e0f5ec" stroke="#1baf7a" stroke-width="3"/>
+
+  <g font-size="25" fill="#0b0b0b" text-anchor="middle">
+    <g class="lbl lbl1">
+      <text x="450" y="310">(1) Learning is</text>
+      <text x="450" y="344">Optimization</text>
+    </g>
+    <g class="lbl lbl4">
+      <text x="180" y="190">(4) ML Describes</text>
+      <text x="180" y="224">Geometric Processes</text>
+    </g>
+    <g class="lbl lbl5">
+      <text x="180" y="425">(5) ML Demands a</text>
+      <text x="180" y="459">Probabilistic Lens</text>
+    </g>
+    <g class="lbl lbl2">
+      <text x="720" y="190">(2) There are Tradeoffs</text>
+      <text x="720" y="224">in Sources of Error</text>
+    </g>
+    <g class="lbl lbl3">
+      <text x="720" y="425">(3) ML is an</text>
+      <text x="720" y="459">Empirical Science</text>
+    </g>
+  </g>
+</svg>
